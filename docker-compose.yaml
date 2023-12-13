@@ -1,0 +1,119 @@
+
+version: '3'
+
+volumes:
+  postgres_data:
+  celery_data:
+
+networks:
+  service_network:
+    external: true
+
+services:
+  db:
+    build:
+      context: ./db
+      dockerfile: Dockerfile
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    container_name: service-db
+    image: service_db:1.0.0
+    expose:
+      - 5432
+    ports:
+      - "8333:5432"
+    env_file:
+      - ./db/.db.env
+    networks:
+      - service_network
+
+  cache:
+    build:
+      context: ./cache
+      dockerfile: Dockerfile
+    container_name: service-cache
+    image: service_cache:1.0.0
+    env_file:
+      - ./cache/.cache.env
+    expose:
+      - 6379
+    networks:
+      - service_network
+
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    image: service_app:1.0.0
+    container_name: service-app
+    env_file:
+      - ./app/.app.env
+    expose:
+      - "8000"
+    volumes:
+      - ./app:/code
+    depends_on:
+      - db
+      - cache
+    links:
+      - db
+      - cache
+    networks:
+      - service_network
+
+  celery:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    command: celery -A core worker -l debug
+    env_file:
+      - ./app/.app.env
+    container_name: service-celery
+    image: service_celery:1.0.0
+    volumes:
+      - celery_data:/code
+    depends_on:
+      - cache
+    links:
+      - cache
+    networks:
+      - service_network
+
+  celery-beat:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    command: celery -A core beat -l debug
+    env_file:
+      - ./app/.app.env
+    container_name: service-celery-beat
+    image: service_celery_beat:1.0.0
+    volumes:
+      - celery_data:/code
+    depends_on:
+      - cache
+    links:
+      - cache
+    networks:
+      - service_network
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: service-nginx
+    image: service_nginx:1.0.0
+    ports:
+      - "3000:8080"
+    expose:
+      - "8080"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/server.conf:/etc/nginx/conf.d/server.conf
+      - ./app/prodstatic:/var/www/static
+    depends_on:
+      - app
+    links:
+      - app
+    networks:
+      - service_network

@@ -1,0 +1,41 @@
+2023-12-12 05:22:17,326 - celery.utils.functional - DEBUG - 
+def xmap(task, it):
+    return 1
+
+2023-12-12 05:22:17,328 - celery.utils.functional - DEBUG - 
+def backend_cleanup():
+    return 1
+
+2023-12-12 05:22:17,328 - celery.utils.functional - DEBUG - 
+def chain(*args, **kwargs):
+    return 1
+
+2023-12-12 05:22:17,328 - celery.utils.functional - DEBUG - 
+def xstarmap(task, it):
+    return 1
+
+2023-12-12 05:22:17,328 - celery.utils.functional - DEBUG - 
+def accumulate(self, *args, **kwargs):
+    return 1
+
+2023-12-12 05:22:17,328 - celery.utils.functional - DEBUG - 
+def chord(self, header, body, partial_args=0, interval=1, countdown=2, max_retries=3, eager=4, **kwargs):
+    return 1
+
+2023-12-12 05:22:17,328 - celery.utils.functional - DEBUG - 
+def update_news_by_organization_id():
+    return 1
+
+2023-12-12 05:22:17,328 - celery.utils.functional - DEBUG - 
+def chunks(task, it, n):
+    return 1
+
+2023-12-12 05:22:17,328 - celery.utils.functional - DEBUG - 
+def unlock_chord(self, group_id, callback, interval=0, max_retries=1, result=2, Result=3, GroupResult=4, result_from_tuple=5, **kwargs):
+    return 1
+
+2023-12-12 05:22:17,329 - celery.utils.functional - DEBUG - 
+def group(self, tasks, result, group_id, partial_args, add_to_parent=0):
+    return 1
+
+2023-12-12 05:22:17,334 - kombu.connection - WARNING - No hostname was supplied. Reverting to default 'localhost'
